@@ -1,7 +1,5 @@
 # Kaggle-Sales-Data-SQL-Queries
 
-# Kaggle Sales Data SQL Queries
-
 A SQL practice project using the **Kaggle Sales Data Sample** dataset.
 
 This repository contains 20 SQL queries focused on data exploration, filtering, aggregation, transformation, and analytical SQL concepts using SQL Server syntax.
