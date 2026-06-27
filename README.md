@@ -85,8 +85,6 @@ Kaggle-Sales-Data-SQL-Queries
 ├── README.md
 │
 ├── Kaggle_Sales_Data_20_SQL_Queries.md
-│
-└── Kaggle_Sales_Data_20_SQL_Queries.sql
 ```
 
 ---
