@@ -1,15 +1,17 @@
+**Dataset:** Sales Data Sample (Kaggle)
+**Database:** SQL Server
+
 ---
 
-## Task 1: Basic Filtering
+# Task 1: Basic Filtering
 
-### Objective:
+Find all records from New York (NY) using the `STATE` column.
 
-Find all records from New York (NY) in the STATE column.
-
-### Correct Query:
+`WHERE` is used to filter rows based on a specific condition.
 
 ```sql
-SELECT * FROM sales_data_sample
+SELECT *
+FROM sales_data_sample
 WHERE STATE = 'NY';
 ```
 
@@ -17,27 +19,24 @@ WHERE STATE = 'NY';
 
 # Task 2: Multi-Condition Filtering
 
-### Objective:
+Find all orders where the status is cancelled, and the sales amount is greater than 5000.
 
-Find all orders where the STATUS is 'Cancelled' AND the total SALES amount was greater than 5000.
-
-### Correct Query:
+`AND` is used when multiple conditions must be true.
 
 ```sql
 SELECT *
 FROM sales_data_sample
-WHERE STATUS = 'Cancelled' AND Sales > 5000;
+WHERE STATUS = 'Cancelled'
+AND SALES > 5000;
 ```
 
 ---
 
-# Task 3: The Ranking Query
+# Task 3: Ranking Query
 
-### Objective:
+Find the single highest sales record.
 
-Find the single largest order line ever recorded based on the SALES column (Top 1 highest record).
-
-### Correct Query:
+`TOP 1` returns one row, and `ORDER BY DESC` sorts values from highest to lowest.
 
 ```sql
 SELECT TOP 1
@@ -47,21 +46,13 @@ FROM sales_data_sample
 ORDER BY SALES DESC;
 ```
 
-### Mistakes & Lessons Learned:
-
-- **Aggregate vs. Sorting:** Initially tried using `MAX(ORDERLINENUMBER)`, but `MAX()` alone collapses rows and doesn't reveal the context of the highest row. The best approach for a "Top 1" row is combining `TOP 1` with `ORDER BY`.
-- **Sorting Direction:** Forgot that `ORDER BY` defaults to Ascending (`ASC`). Had to add `DESC` to ensure the highest sales value came to the top.
-- **Data Context:** Discovered that `ORDERLINENUMBER` is a line-item index on a receipt (e.g., item #18 on the invoice), not the quantity ordered.
-
 ---
 
-# Task 4: The Category Breakdown
+# Task 4: Category Breakdown
 
-### Objective:
+Find total sales for each product line.
 
-Show the total sales (`SUM`) made by each PRODUCTLINE.
-
-### Correct Query:
+`SUM()` calculates total values and `GROUP BY` creates groups.
 
 ```sql
 SELECT
@@ -73,13 +64,11 @@ GROUP BY PRODUCTLINE;
 
 ---
 
-# Task 5: The Multi-Group Breakdown
+# Task 5: Multi-Group Breakdown
 
-### Objective:
+Find total sales by year and product line.
 
-Show the total sales (`SUM`) broken down by both YEAR_ID AND PRODUCTLINE.
-
-### Correct Query:
+Multiple columns can be grouped together for detailed analysis.
 
 ```sql
 SELECT
@@ -92,13 +81,11 @@ GROUP BY YEAR_ID, PRODUCTLINE;
 
 ---
 
-# Task 6: The High-Performing Countries
+# Task 6: High-Performing Countries
 
-### Objective:
+Find countries with lifetime sales greater than 1,000,000.
 
-Find countries that generated more than $1,000,000 in total lifetime sales.
-
-### Correct Query:
+`HAVING` is used to filter aggregated results after `GROUP BY`.
 
 ```sql
 SELECT
@@ -109,19 +96,13 @@ GROUP BY COUNTRY
 HAVING SUM(SALES) > 1000000;
 ```
 
-### Key Concept Mastered:
-
-Successfully used `HAVING` instead of `WHERE` to filter on an aggregated total (`SUM(SALES)`).
-
 ---
 
-# Task 7: Formatting the Date
+# Task 7: Formatting Dates
 
-### Objective:
+Display order dates in YYYY-MM-DD format.
 
-Display unique ORDERDATE values formatted strictly as YYYY-MM-DD.
-
-### Correct Query:
+`FORMAT()` changes how date values are displayed.
 
 ```sql
 SELECT
@@ -130,25 +111,17 @@ FORMAT(ORDERDATE, 'yyyy-MM-dd') AS FORMATTED_DATE
 FROM sales_data_sample;
 ```
 
-### Mistakes & Lessons Learned:
-
-- **Function Syntax:** `FORMAT()` requires two arguments inside the parentheses: the column name, and the format string pattern (`FORMAT(column, 'string')`).
-- **Case Sensitivity:** In SQL Server's `FORMAT()`, years must be lowercase `yyyy` and days must be lowercase `dd`. Months must be uppercase `MM` to prevent SQL from confusing them with minutes (`mm`).
-- **Spacing:** Extra spaces inside the format string pattern (like `'YYYY - MM- DD'`) will literally render into the output data. Keep it tight: `'yyyy-MM-dd'`.
-
 ---
 
-# Task 8: Cleaning up Contact Names
+# Task 8: Cleaning Contact Names
 
-### Objective:
+Combine the first name and last name into one column.
 
-Combine CONTACTFIRSTNAME and CONTACTLASTNAME into a single column called FULL_NAME with a space between them.
-
-### Correct Query:
+`CONCAT()` combines multiple string values.
 
 ```sql
 SELECT
-CONCAT(CONTACTFIRSTNAME, ' ', CONTACTLASTNAME) AS Contact_fullname
+CONCAT(CONTACTFIRSTNAME, ' ', CONTACTLASTNAME) AS FULL_NAME
 FROM sales_data_sample;
 ```
 
@@ -156,15 +129,9 @@ FROM sales_data_sample;
 
 # Task 9: Categorizing Order Sizes
 
-### Objective:
+Create categories based on quantity ordered.
 
-Create a conditional column using a CASE statement to classify QUANTITYORDERED as:
-
-- Large (`>40`)
-- Medium (`20-40`)
-- Small (`<20`)
-
-### Correct Query:
+`CASE` applies conditional logic to create new categories.
 
 ```sql
 SELECT
@@ -177,21 +144,13 @@ END AS ORDER_SIZE_CATEGORY
 FROM sales_data_sample;
 ```
 
-### Mistakes & Lessons Learned:
-
-- **Structural Syntax:** CASE blocks do not require parentheses `()` around their logical branches.
-- **Punctuation:** Do not put commas `,` between `WHEN/THEN` statement blocks; clauses inside a CASE flow sequentially without individual line separators.
-- **Aliasing:** The column alias (`AS alias_name`) belongs outside the block, immediately following the `END` keyword.
-
 ---
 
-# Task 10: The Conditional Summary
+# Task 10: Conditional Summary
 
-### Objective:
+Count shipped orders by country.
 
-Find the total number of orders shipped to each country, filtering only for rows where STATUS is 'Shipped'.
-
-### Correct Query:
+`COUNT()` counts records and `WHERE` filters only shipped orders.
 
 ```sql
 SELECT
@@ -202,68 +161,45 @@ WHERE STATUS = 'SHIPPED'
 GROUP BY COUNTRY;
 ```
 
-## Functions, Dates, & Subqueries
-
----
-
-# 🧮 Part 1: String & Aggregate Functions (Tasks 11–14)
-
 ---
 
 # Task 11: String Concatenation
 
-### Concept:
+Combine multiple text columns into a single descriptive string.
 
-Combining multiple text columns into a single descriptive string.
-
-### Key Syntax:
-
-Using the `+` operator or `CONCAT()` function in SQL Server.
-
-### Code Template:
+`CONCAT()` or the `+` operator can be used to join text values together.
 
 ```sql
-SELECT CONTACTFIRSTNAME + ' ' + CONTACTLASTNAME AS FULL_NAME
+SELECT
+CONTACTFIRSTNAME + ' ' + CONTACTLASTNAME AS FULL_NAME
 FROM sales_data_sample;
 ```
 
 ---
 
-# Task 12: Conditional Replacement (ISNULL)
+# Task 12: Handling NULL Values
 
-### Concept:
+Replace missing STATE values with a default value.
 
-Preventing blank or missing data (`NULL`) from showing up in reports by providing a default fallback string.
-
-### Key Syntax:
+`ISNULL()` replaces NULL values with a specified replacement value.
 
 ```sql
-ISNULL(column_to_check, 'replacement_value')
-```
-
-### Code Template:
-
-```sql
-SELECT ISNULL(STATE, 'N/A') AS CLEANED_STATE
+SELECT
+ISNULL(STATE, 'N/A') AS CLEANED_STATE
 FROM sales_data_sample;
 ```
 
 ---
 
-# Task 13: Trimming & Character Counts
+# Task 13: Trimming & Character Count
 
-### Concept:
+Remove extra spaces and calculate text length.
 
-Removing accidental trailing/leading blank spaces from strings and measuring text length.
-
-### Key Syntax:
-
-`TRIM()` cleans up hidden whitespace, and `LEN()` counts characters.
-
-### Code Template:
+`TRIM()` removes unwanted spaces and `LEN()` counts characters.
 
 ```sql
-SELECT LEN(TRIM(PRODUCTCODE)) AS CLEAN_LENGTH
+SELECT
+LEN(TRIM(PRODUCTCODE)) AS CLEAN_LENGTH
 FROM sales_data_sample;
 ```
 
@@ -271,110 +207,85 @@ FROM sales_data_sample;
 
 # Task 14: Unique Character Lengths
 
-### Concept:
+Find unique phone numbers and their character lengths.
 
-Combining `DISTINCT` with string functions to analyze the structural properties of unique values in a column.
-
-### Code Template:
+`DISTINCT` removes duplicate values and `LEN()` calculates length.
 
 ```sql
-SELECT DISTINCT PHONE, LEN(PHONE) AS PHONE_LENGTH
+SELECT DISTINCT
+PHONE,
+LEN(PHONE) AS PHONE_LENGTH
 FROM sales_data_sample;
 ```
 
 ---
 
-# 📅 Part 2: Working with Dates (Tasks 15–16)
+# Task 15: Adding Dates
 
----
+Add days to an existing order date.
 
-# Task 15: Date Additions (DATEADD)
-
-### Concept:
-
-Shifting timestamps forward or backward along a specific interval timeline (days, months, years).
-
-### Key Syntax:
+`DATEADD()` shifts dates forward or backward by a specific interval.
 
 ```sql
-DATEADD(datepart, number, date_column)
-```
-
-### Code Template:
-
-```sql
-SELECT ORDERNUMBER, ORDERDATE,
-       DATEADD(day, 7, ORDERDATE) AS TARGET_DELIVERY_DATE
+SELECT
+ORDERNUMBER,
+ORDERDATE,
+DATEADD(day, 7, ORDERDATE) AS TARGET_DELIVERY_DATE
 FROM sales_data_sample;
 ```
 
 ---
 
-# Task 16: Extracting Parts of a Timestamp
+# Task 16: Extracting Date Parts
 
-### Concept:
+Extract specific parts of a date, such as month, year, or day.
 
-Pulling out isolated parts of a full datetime value (like just the month number) for seasonal or monthly groupings.
-
-### Key Syntax:
+Date functions help in creating time-based analysis.
 
 ```sql
-MONTH(date_column)
-YEAR(date_column)
-DAY(date_column)
-```
-
-### Code Template:
-
-```sql
-SELECT ORDERNUMBER, ORDERDATE,
-       MONTH(ORDERDATE) AS EXTRACTED_MONTH
+SELECT
+ORDERNUMBER,
+ORDERDATE,
+MONTH(ORDERDATE) AS EXTRACTED_MONTH
 FROM sales_data_sample;
 ```
 
 ---
 
-# 🔍 Part 3: Mastering Subqueries (Tasks 17–20)
+# Task 17: Scalar Subquery
 
-## 💡 Notion Cheat Sheet:
+Find orders where sales are higher than the average sales value.
 
-A subquery is a query nested inside another query. The inner query runs first and hands its results to the outer query.
-
----
-
-# Task 17: Scalar Subquery (Single Value)
-
-### Concept:
-
-Used when you want to filter records against a calculated value (like an overall average).
-
-You cannot use aggregate functions like `AVG()` directly inside a `WHERE` clause, so a subquery calculates it first.
-
-### Code Template:
+A scalar subquery returns a single value that can be used for comparison.
 
 ```sql
-SELECT ORDERNUMBER, SALES
+SELECT
+ORDERNUMBER,
+SALES
 FROM sales_data_sample
-WHERE SALES > (SELECT AVG(SALES) FROM sales_data_sample);
+WHERE SALES >
+(
+    SELECT AVG(SALES)
+    FROM sales_data_sample
+);
 ```
 
 ---
 
-# Task 18: Table Subquery with IN
+# Task 18: Subquery with IN
 
-### Concept:
+Find customers who have at least one order with sales greater than 10,000.
 
-Evaluates whether a value belongs to a dynamic list or checklist generated by a nested query.
-
-Great alternative to basic joins when you only need to check for existence.
-
-### Code Template:
+`IN` checks whether a value exists inside the result returned by another query.
 
 ```sql
 SELECT DISTINCT CUSTOMERNAME
 FROM sales_data_sample
-WHERE CUSTOMERNAME IN (
-    SELECT CUSTOMERNAME FROM sales_data_sample WHERE SALES > 10000
+WHERE CUSTOMERNAME IN
+(
+    SELECT CUSTOMERNAME
+    FROM sales_data_sample
+    WHERE SALES > 10000
 );
 ```
 
@@ -382,41 +293,41 @@ WHERE CUSTOMERNAME IN (
 
 # Task 19: Correlated Subquery with EXISTS
 
-### Concept:
+Find records where a matching order exists with sales greater than 10,000.
 
-The inner query executes once for every single row evaluated by the outer query.
-
-It checks for table relationships using aliases (main vs sub) and returns TRUE or FALSE based on whether rows match the criteria.
-
-### Code Template:
+A correlated subquery uses values from the outer query and runs for each row.
 
 ```sql
-SELECT main.ORDERNUMBER, main.CUSTOMERNAME, main.SALES
+SELECT
+main.ORDERNUMBER,
+main.CUSTOMERNAME,
+main.SALES
 FROM sales_data_sample main
-WHERE EXISTS (
-    SELECT 1 FROM sales_data_sample sub
-    WHERE sub.ORDERNUMBER = main.ORDERNUMBER AND sub.SALES > 10000
+WHERE EXISTS
+(
+    SELECT 1
+    FROM sales_data_sample sub
+    WHERE sub.ORDERNUMBER = main.ORDERNUMBER
+    AND sub.SALES > 10000
 );
 ```
 
 ---
 
-# Task 20: Derived Tables (Subquery in FROM)
+# Task 20: Derived Table Subquery
 
-### Concept:
+Find the highest total sales made by a customer.
 
-When you need to run an aggregation on data that has already been aggregated.
-
-Example: Finding the maximum value out of a list of customer sums.
-
-The inner query must always be given a table alias.
-
-### Code Template:
+A derived table is a subquery inside the FROM clause that works like a temporary table.
 
 ```sql
-SELECT MAX(customer_totals.total_sales) AS MAX_CUSTOMER_SALES
-FROM (
-    SELECT CUSTOMERNAME, SUM(SALES) AS total_sales
+SELECT
+MAX(customer_totals.total_sales) AS MAX_CUSTOMER_SALES
+FROM
+(
+    SELECT
+    CUSTOMERNAME,
+    SUM(SALES) AS total_sales
     FROM sales_data_sample
     GROUP BY CUSTOMERNAME
 ) AS customer_totals;
